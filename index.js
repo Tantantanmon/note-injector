@@ -1,5 +1,10 @@
 const EXTENSION_NAME = 'note-injector';
 
+import { SlashCommandParser } from '../../../slash-commands/SlashCommandParser.js';
+import { SlashCommand } from '../../../slash-commands/SlashCommand.js';
+import { ARGUMENT_TYPE, SlashCommandArgument, SlashCommandNamedArgument } from '../../../slash-commands/SlashCommandArgument.js';
+import { commonEnumProviders } from '../../../slash-commands/SlashCommandCommonEnumsProvider.js';
+
 const {
     renderExtensionTemplateAsync,
     extensionSettings,
@@ -462,4 +467,30 @@ jQuery(async () => {
 
     eventSource.on(event_types.CHAT_CHANGED, onChatChanged);
     applyInjection();
+
+    // 매직완드(슬래시 커맨드) 등록 — 입력창 확장 리스트에 표시됨
+    SlashCommandParser.addCommandObject(SlashCommand.fromProps({
+        name: 'note-injector',
+        aliases: ['ni'],
+        helpString: '노트 인젝터 패널을 열거나 닫습니다.',
+        returns: '없음',
+        callback: () => {
+            panelOpen ? closePanel() : openPanel();
+            return '';
+        },
+    }));
+
+    SlashCommandParser.addCommandObject(SlashCommand.fromProps({
+        name: 'ni-open',
+        helpString: '노트 인젝터 패널을 엽니다.',
+        returns: '없음',
+        callback: () => { openPanel(); return ''; },
+    }));
+
+    SlashCommandParser.addCommandObject(SlashCommand.fromProps({
+        name: 'ni-close',
+        helpString: '노트 인젝터 패널을 닫습니다.',
+        returns: '없음',
+        callback: () => { closePanel(); return ''; },
+    }));
 });
