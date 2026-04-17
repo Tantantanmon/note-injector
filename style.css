@@ -1,0 +1,744 @@
+/* ===== Note Injector Panel ===== */
+.ni-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 560px;
+    height: 100vh;
+    z-index: 9999;
+    display: flex;
+    transform: translateX(100%);
+    transition: transform 0.36s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.12);
+}
+
+.ni-panel.ni-open {
+    transform: translateX(0);
+}
+
+.ni-panel.ni-hidden {
+    display: none;
+}
+
+.ni-panel.ni-collapsed {
+    transform: translateX(calc(100% - 40px));
+}
+
+.ni-panel-inner {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    overflow: hidden;
+}
+
+/* ===== 사이드바 ===== */
+.ni-sidebar {
+    width: 190px;
+    flex-shrink: 0;
+    background: #fff;
+    border-right: 1px solid #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.ni-sb-head {
+    padding: 20px 16px 14px;
+    border-bottom: 1px solid #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.ni-sb-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ni-sb-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.ni-icon-btn {
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    background: #f5f5f5;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    flex-shrink: 0;
+    transition: background 0.1s;
+}
+
+.ni-icon-btn:hover {
+    background: #eee;
+    color: #555;
+}
+
+.ni-icon-btn svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+}
+
+.ni-sb-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 0;
+    scrollbar-width: none;
+}
+
+.ni-sb-list::-webkit-scrollbar { display: none; }
+
+.ni-sb-empty {
+    padding: 16px;
+    font-size: 12px;
+    color: #ccc;
+    text-align: center;
+}
+
+.ni-sb-sec-lbl {
+    font-size: 10px;
+    font-weight: 500;
+    color: #bbb;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    padding: 10px 16px 4px;
+}
+
+.ni-sb-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    margin: 1px 6px;
+    cursor: pointer;
+    transition: background 0.1s;
+}
+
+.ni-sb-row:hover { background: #f7f7f7; }
+
+.ni-sb-row.active { background: #111; }
+
+.ni-sb-row svg { stroke: #bbb; flex-shrink: 0; }
+
+.ni-sb-row.active svg { stroke: #fff; }
+
+.ni-sb-row-name {
+    font-size: 13px;
+    color: #777;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ni-sb-row.active .ni-sb-row-name {
+    color: #fff;
+    font-weight: 500;
+}
+
+.ni-sb-row-ct {
+    font-size: 10px;
+    color: #ccc;
+}
+
+.ni-sb-row.active .ni-sb-row-ct { color: rgba(255,255,255,0.4); }
+
+.ni-sb-div {
+    height: 1px;
+    background: #f5f5f5;
+    margin: 6px 12px;
+}
+
+.ni-sb-add-btn {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 18px;
+    font-size: 12px;
+    color: #ccc;
+    border: none;
+    border-top: 1px solid #f5f5f5;
+    background: transparent;
+    cursor: pointer;
+    width: 100%;
+    transition: color 0.1s;
+    font-family: inherit;
+}
+
+.ni-sb-add-btn:hover { color: #888; }
+
+.ni-sb-add-btn svg {
+    width: 13px;
+    height: 13px;
+    stroke: currentColor;
+    flex-shrink: 0;
+}
+
+/* ===== 메인 ===== */
+.ni-main {
+    flex: 1;
+    background: #f8f8f8;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 0;
+}
+
+.ni-main-head {
+    padding: 18px 20px 0;
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+    flex-shrink: 0;
+}
+
+.ni-main-head-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+}
+
+.ni-main-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111;
+}
+
+.ni-add-sec-btn {
+    padding: 5px 12px;
+    border-radius: 7px;
+    background: #111;
+    border: none;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.1s;
+}
+
+.ni-add-sec-btn:hover { background: #333; }
+
+/* ===== 섹션 탭바 ===== */
+.ni-sec-tabbar {
+    display: flex;
+    align-items: flex-end;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.ni-sec-tabbar::-webkit-scrollbar { display: none; }
+
+.ni-sec-tab {
+    padding: 8px 14px;
+    font-size: 12px;
+    color: #bbb;
+    cursor: pointer;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    user-select: none;
+}
+
+.ni-sec-tab:hover { color: #555; }
+
+.ni-sec-tab.active {
+    color: #111;
+    font-weight: 500;
+    border-bottom-color: #111;
+}
+
+.ni-tab-dot {
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #ddd;
+    margin-right: 5px;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+    transition: background 0.15s;
+}
+
+.ni-sec-tab.injecting .ni-tab-dot { background: #111; }
+
+.ni-sec-tab-add {
+    padding: 8px 12px;
+    font-size: 15px;
+    color: #ccc;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color 0.1s;
+}
+
+.ni-sec-tab-add:hover { color: #888; }
+
+/* ===== 섹션 페이지 ===== */
+.ni-pages {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.ni-page {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.ni-page.ni-page-active {
+    display: flex;
+}
+
+.ni-page-controls {
+    padding: 11px 20px;
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.ni-ctrl-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ni-ctrl-lbl {
+    font-size: 12px;
+    color: #999;
+}
+
+.ni-badge {
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 20px;
+}
+
+.ni-badge-on { background: #111; color: #fff; }
+.ni-badge-off { background: #f0f0f0; color: #bbb; }
+
+.ni-ctrl-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ===== 토글 ===== */
+.ni-tog {
+    width: 36px;
+    height: 20px;
+    border-radius: 10px;
+    background: #ddd;
+    border: none;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.18s;
+    flex-shrink: 0;
+}
+
+.ni-tog.ni-tog-on { background: #111; }
+
+.ni-tog::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fff;
+    top: 3px;
+    left: 3px;
+    transition: left 0.18s;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+.ni-tog.ni-tog-on::after { left: 19px; }
+
+/* ===== 위치 선택 드롭다운 ===== */
+.ni-loc-wrapper {
+    position: relative;
+}
+
+.ni-loc-btn {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 10px;
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    color: #333;
+    font-weight: 500;
+    transition: border-color 0.1s;
+    white-space: nowrap;
+    font-family: inherit;
+}
+
+.ni-loc-btn:hover { border-color: #ccc; }
+
+.ni-loc-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.ni-loc-icon svg {
+    width: 12px;
+    height: 12px;
+    fill: none;
+    stroke-width: 1.8;
+}
+
+.ni-icon-an { background: #fef9e7; }
+.ni-icon-an svg { stroke: #e6a800; }
+.ni-icon-sp { background: #fdecea; }
+.ni-icon-sp svg { stroke: #e53935; }
+.ni-icon-sa { background: #fff3e0; }
+.ni-icon-sa svg { stroke: #ef6c00; }
+.ni-icon-cf { background: #e8f5e9; }
+.ni-icon-cf svg { stroke: #2e7d32; }
+
+.ni-loc-text {
+    font-size: 11px;
+    color: #555;
+    font-weight: 500;
+}
+
+.ni-loc-chevron {
+    font-size: 11px;
+    color: #ccc;
+    margin-left: 2px;
+}
+
+.ni-loc-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    background: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 210px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    z-index: 10001;
+}
+
+.ni-loc-opt {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    cursor: pointer;
+    transition: background 0.1s;
+}
+
+.ni-loc-opt:hover { background: #f8f8f8; }
+.ni-loc-opt-selected { background: #f5f5f5; }
+.ni-loc-opt + .ni-loc-opt { border-top: 1px solid #f5f5f5; }
+
+.ni-loc-opt-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.ni-loc-opt-name { font-size: 12px; color: #111; font-weight: 500; }
+.ni-loc-opt-sub { font-size: 10px; color: #bbb; }
+.ni-loc-check { font-size: 12px; color: #111; }
+
+/* ===== 텍스트에어리어 ===== */
+.ni-page-ta {
+    flex: 1;
+    padding: 18px 20px;
+    font-size: 13px;
+    line-height: 1.9;
+    color: #222;
+    border: none;
+    resize: none;
+    outline: none;
+    background: #fafafa;
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+}
+
+.ni-page-ta::placeholder { color: #ccc; }
+
+/* ===== 페이지 푸터 ===== */
+.ni-page-footer {
+    padding: 8px 20px;
+    border-top: 1px solid #f0f0f0;
+    background: #fff;
+    display: flex;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.ni-hint { font-size: 11px; color: #bbb; }
+.ni-count { font-size: 11px; color: #bbb; }
+
+/* ===== 트리거 버튼 ===== */
+.note-injector-trigger-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    color: #555;
+    transition: background 0.1s;
+    user-select: none;
+    margin-bottom: 4px;
+}
+
+.note-injector-trigger-btn:hover { background: rgba(0,0,0,0.05); }
+
+.ni-active-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #111;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    margin-left: auto;
+}
+
+/* ===== 모달 ===== */
+.ni-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.3);
+    z-index: 10002;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ni-modal-overlay.ni-hidden { display: none; }
+
+.ni-modal {
+    background: #fff;
+    border-radius: 14px;
+    width: 300px;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+}
+
+.ni-modal-head {
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ni-modal-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #111;
+}
+
+.ni-modal-x {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background: #f5f5f5;
+    border: none;
+    cursor: pointer;
+    font-size: 11px;
+    color: #999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+}
+
+.ni-modal-x:hover { background: #eee; }
+
+.ni-modal-body {
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.ni-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.ni-field-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: #aaa;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+}
+
+.ni-field-input {
+    padding: 9px 12px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #111;
+    background: #fafafa;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.1s;
+}
+
+.ni-field-input:focus { border-color: #ccc; background: #fff; }
+.ni-field-input::placeholder { color: #ccc; }
+
+.ni-group-options {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 4px;
+}
+
+.ni-group-opt {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.1s;
+    background: #fafafa;
+}
+
+.ni-group-opt:hover { border-color: #ccc; background: #f5f5f5; }
+.ni-group-opt.selected { border-color: #111; background: #fff; }
+
+.ni-group-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #ddd;
+    flex-shrink: 0;
+}
+
+.ni-group-opt.selected .ni-group-dot { background: #111; }
+
+.ni-group-opt-name { font-size: 13px; color: #777; flex: 1; }
+.ni-group-opt.selected .ni-group-opt-name { color: #111; font-weight: 500; }
+.ni-group-ct { font-size: 10px; color: #ccc; }
+
+.ni-new-group-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 12px;
+    border: 1px dashed #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.1s;
+    font-size: 13px;
+    color: #bbb;
+}
+
+.ni-new-group-row:hover { border-color: #aaa; color: #888; }
+.ni-new-group-row svg { flex-shrink: 0; }
+
+.ni-new-group-input-row {
+    display: flex;
+    gap: 6px;
+}
+
+.ni-new-group-input {
+    flex: 1;
+    padding: 9px 12px;
+    border: 1px solid #111;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #111;
+    outline: none;
+    font-family: inherit;
+}
+
+.ni-new-group-input::placeholder { color: #ccc; }
+
+.ni-new-group-confirm {
+    padding: 9px 12px;
+    border-radius: 8px;
+    background: #111;
+    border: none;
+    color: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 500;
+}
+
+.ni-modal-footer {
+    padding: 14px 20px;
+    border-top: 1px solid #f5f5f5;
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.ni-btn-cancel {
+    padding: 7px 14px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    background: #fff;
+    font-size: 13px;
+    color: #999;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.1s;
+}
+
+.ni-btn-cancel:hover { background: #f5f5f5; }
+
+.ni-btn-confirm {
+    padding: 7px 16px;
+    border-radius: 8px;
+    border: none;
+    background: #111;
+    font-size: 13px;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 500;
+    font-family: inherit;
+    transition: background 0.1s;
+}
+
+.ni-btn-confirm:hover { background: #333; }
+
+/* ===== 유틸 ===== */
+.ni-hidden { display: none !important; }

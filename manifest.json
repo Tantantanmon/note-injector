@@ -1,0 +1,10 @@
+{
+    "display_name": "Note Injector",
+    "version": "1.0.0",
+    "description": "캐릭터별 노트를 섹션/탭으로 관리하고 원하는 위치에 프롬프트를 주입합니다.",
+    "author": "",
+    "homepageUrl": "",
+    "js": "index.js",
+    "css": "style.css",
+    "allowedInterfaces": ["desktop"]
+}
