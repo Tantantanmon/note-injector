@@ -1,16 +1,12 @@
 const EXTENSION_NAME = 'note-injector';
 
-import { SlashCommandParser } from '../../../slash-commands/SlashCommandParser.js';
-import { SlashCommand } from '../../../slash-commands/SlashCommand.js';
-import { ARGUMENT_TYPE, SlashCommandArgument, SlashCommandNamedArgument } from '../../../slash-commands/SlashCommandArgument.js';
-import { commonEnumProviders } from '../../../slash-commands/SlashCommandCommonEnumsProvider.js';
+import { event_types } from '../../../events.js';
 
 const {
     renderExtensionTemplateAsync,
     extensionSettings,
     saveSettingsDebounced,
     eventSource,
-    event_types,
     setExtensionPrompt,
     extension_prompt_types,
     getContext,
@@ -429,7 +425,19 @@ function onChatChanged() {
     applyInjection();
 }
 
-jQuery(async () => {
+function injectMenuEntry() {
+    if ($('#ni-menu-entry').length) return;
+    const entry = $(`
+        <div id="ni-menu-entry" class="list-group-item" title="Note Injector" style="cursor:pointer; display:flex; align-items:center; gap:8px;">
+            <span style="font-size:16px;">📝</span>
+            <span>Note Injector</span>
+        </div>
+    `);
+    entry.on('click', () => { panelOpen ? closePanel() : openPanel(); });
+    $('#extensionsMenu').append(entry);
+}
+
+async function init() {
     const settingsHtml = await renderExtensionTemplateAsync(`third-party/${EXTENSION_NAME}`, 'settings');
     $('#extensions_settings2').append(settingsHtml);
     $('body').append(buildPanelHTML());
@@ -467,30 +475,10 @@ jQuery(async () => {
 
     eventSource.on(event_types.CHAT_CHANGED, onChatChanged);
     applyInjection();
+    injectMenuEntry();
+}
 
-    // 매직완드(슬래시 커맨드) 등록 — 입력창 확장 리스트에 표시됨
-    SlashCommandParser.addCommandObject(SlashCommand.fromProps({
-        name: 'note-injector',
-        aliases: ['ni'],
-        helpString: '노트 인젝터 패널을 열거나 닫습니다.',
-        returns: '없음',
-        callback: () => {
-            panelOpen ? closePanel() : openPanel();
-            return '';
-        },
-    }));
-
-    SlashCommandParser.addCommandObject(SlashCommand.fromProps({
-        name: 'ni-open',
-        helpString: '노트 인젝터 패널을 엽니다.',
-        returns: '없음',
-        callback: () => { openPanel(); return ''; },
-    }));
-
-    SlashCommandParser.addCommandObject(SlashCommand.fromProps({
-        name: 'ni-close',
-        helpString: '노트 인젝터 패널을 닫습니다.',
-        returns: '없음',
-        callback: () => { closePanel(); return ''; },
-    }));
+jQuery(async () => {
+    const context = SillyTavern.getContext();
+    context.eventSource.on(event_types.APP_READY, async () => { await init(); });
 });
